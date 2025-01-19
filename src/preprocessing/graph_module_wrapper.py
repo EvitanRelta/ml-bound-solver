@@ -111,6 +111,7 @@ def is_module(node: fx.Node) -> bool:
 
 
 def compute_output_shape(module: nn.Module, input_shape: Tuple[int, ...]) -> Tuple[int, ...]:
+    assert len(input_shape) > 0
     if isinstance(module, nn.Linear):
         assert len(input_shape) <= 2
         is_batched = len(input_shape) == 2
