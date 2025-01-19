@@ -7,7 +7,6 @@ from tqdm.autonotebook import tqdm
 
 from ..modules.Solver import Solver
 from .custom_lr_schedulers import ReduceLROnRecentPlateau
-from .EarlyStopHandler import EarlyStopHandler
 from .TrainingConfig import TrainingConfig
 
 
@@ -37,7 +36,6 @@ def train(solver: Solver, config: TrainingConfig = TrainingConfig()) -> Tuple[bo
         threshold=config.reduce_lr_threshold,
         min_lr=config.min_lr,
     )
-    early_stop_handler = EarlyStopHandler(config.min_lr)
 
     theta_list: List[Tensor] = []
 
@@ -91,7 +89,8 @@ def train(solver: Solver, config: TrainingConfig = TrainingConfig()) -> Tuple[bo
         )
         pbar.update()
 
-        if early_stop_handler.is_early_stopped(current_lr):
+        # Stop condition.
+        if current_lr == config.min_lr:
             pbar.set_description(f"Training stopped at epoch {epoch}, Loss: {loss_float:.1f}, Min Loss: {min_loss:.1f}")
             pbar.close()
             break
